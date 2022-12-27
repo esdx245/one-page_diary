@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import React,{ useRef,useState } from 'react';
 
 const DiaryEditor = () => {
+    const authorRef = useRef();/*useRef는 DOM을 직접적으로 건드리는 방법으로 MutableRefObject을 반환. 이는 HTML부분에 접근할 수 있는것임 */
+    const contentRef = useRef();
     const [state, setState ] = useState({
         author: "",
         content: "",
@@ -13,13 +15,23 @@ const DiaryEditor = () => {
         })
     }
     const handleSubmit = () => {
-        console.log(state);
+        if (state.author.length < 1) {
+            authorRef.current.focus();
+            return;/*return을 쓰면 함수를 끝내고 아래 코드는 실행하지 않음 */
+        }
+        if (state.content.length < 5) {
+            contentRef.current.focus();
+            return;
+        }
+        
+        alert("저장 성공!");
     }
 
     return <div className="DiaryEditor">
         <h2>오늘의 일기</h2>
         <div>{/*이름을 입력하는 부분 */}
             <input
+                ref = {authorRef} /*ref를 사용하면 authorRef를 사용할 수 있음 */
                 name='author'
                 value={state.author} 
                 onChange={handleChange} /*값이 변화하면 그 입력된 값을 author로 변화하는 함수, 이 함수를 사용하지 않으면 아무리 입력창에 입력해도 초기값에서 변경되지 않음*/
@@ -27,6 +39,7 @@ const DiaryEditor = () => {
         </div>
         <div>{/*일기 내용을 입력하는 부분 */}
             <textarea
+                ref = {contentRef}
                 name='content'
                 value={state.content}
                 onChange={handleChange}
