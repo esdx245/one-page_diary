@@ -1,6 +1,6 @@
 import React,{ useRef,useState } from 'react';
 
-const DiaryEditor = () => {
+const DiaryEditor = ({addDiary}) => {
     const authorRef = useRef();/*useRef는 DOM을 직접적으로 건드리는 방법으로 MutableRefObject을 반환. 이는 HTML부분에 접근할 수 있는것임 */
     const contentRef = useRef();
     const [state, setState ] = useState({
@@ -23,8 +23,13 @@ const DiaryEditor = () => {
             contentRef.current.focus();
             return;
         }
-        
+        addDiary(state.author, state.content, state.emotionRate);
         alert("저장 성공!");
+        setState({
+            author: "",
+            content: "",
+            emotionRate: 1,
+        })
     }
 
     return <div className="DiaryEditor">
