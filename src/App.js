@@ -35,15 +35,19 @@ function App() {
     setData([newdiary, ...data]);
   }
 
-  const deleteDiary = (targetId) => {
+  const removeDiary = (targetId) => {
     setData(data.filter((it) => it.id !== targetId));
     alert(`${targetId}번 일기가 삭제되었습니다.`);
+  }
+
+  const editDiary = (targetId, newContent) => {
+    setData(data.map((it) => it.id === targetId ? {...it, content: newContent} : it));
   }
 
   return (
     <div className="App">
       <DiaryEditor addDiary={addDiary} />
-      <DiaryList diaryList={data} deleteDiary={deleteDiary} />
+      <DiaryList diaryList={data} removeDiary={removeDiary} editDiary = {editDiary} />
     </div>
   );
 }
