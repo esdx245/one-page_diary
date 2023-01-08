@@ -1,10 +1,8 @@
 import './App.css';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
 import DiaryEditor from './DiaryEditor';
 import DiaryList from './DiaryList';
 // import LifeCycle from './LifeCycle';
-
-// https://jsonplaceholder.typicode.com/comments
 
 // const templist = [
 //   {
@@ -67,10 +65,25 @@ function App() {
     setData(data.map((it) => it.id === targetId ? {...it, content: newContent} : it));
   }
 
+  const getDiaryAnalysis = useMemo(() => {
+    const goodCount = data.filter((it) => it.emotionRate >= 3).length;
+    const badCount = data.length - goodCount;
+    const goodRatio = (goodCount / data.length) * 100;
+    console.log(`데이터 분석 시작 / 좋은 일기 개수 ${goodCount}개 / 나쁜 일기 개수 ${badCount}개 / 좋은 일기 비율 ${goodRatio}%`);
+    return { goodCount, badCount, goodRatio };
+  },[data.length] // data.length가 변경될때만 실행된다. 또한 useMemo는 값을 return 받으므로 더이상 getDiaryAnalysis는 함수가 아닌 값이다.
+  );
+
+  const {goodCount, badCount, goodRatio} = getDiaryAnalysis; // 이 코드는 처음 생성될때 1번 실행되고, data가 init된 이후 1번 실행되고, data가 변경될때마다 실행된다.
+
   return (
     <div className="App">
       {/*<LifeCycle/> 라이프사이클 테스트 코드*/}
       <DiaryEditor addDiary={addDiary} />
+      <div>전체 일기 개수 : {data.length}</div>
+      <div>기분 좋은 일기 개수 : {goodCount}</div>
+      <div>기분 나쁜 일기 개수 : {badCount}</div>
+      <div>기분 좋은 일기 비율 : {goodRatio}%</div>
       <DiaryList diaryList={data} removeDiary={removeDiary} editDiary = {editDiary} />
     </div>
   );
