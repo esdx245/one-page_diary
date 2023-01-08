@@ -2,6 +2,7 @@ import './App.css';
 import React, {useState, useRef} from 'react';
 import DiaryEditor from './DiaryEditor';
 import DiaryList from './DiaryList';
+import LifeCycle from './LifeCycle';
 
 // const templist = [
 //   {
@@ -46,6 +47,7 @@ function App() {
 
   return (
     <div className="App">
+      <LifeCycle/>
       <DiaryEditor addDiary={addDiary} />
       <DiaryList diaryList={data} removeDiary={removeDiary} editDiary = {editDiary} />
     </div>
