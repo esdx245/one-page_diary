@@ -54,6 +54,9 @@ const reducer = (state, action) => {
   }
 };
 
+export const DiaryStateContext = React.createContext();
+export const DiaryDispatchContext = React.createContext();
+
 function App() {
   const [data, dispatch] = useReducer(reducer, []);
   const idCount = useRef(0);
@@ -100,23 +103,31 @@ function App() {
     dispatch({ type: "EDIT", targetId, newContent });
   }, []);
 
+  const memoizedDiary = useMemo(() => {
+    return {
+      addDiary,
+      removeDiary,
+      editDiary,
+    };
+  }, []);
+
   const getDataEmotionRate = useMemo(() => {
     const emotionRateArray = data.map((it) => it.emotionRate);
     return emotionRateArray;
   }, [data.length]);
 
   return (
-    <div className="App">
-      {/*<OptimizeTest />*/}
-      {/*<LifeCycle/> 라이프사이클 테스트 코드*/}
-      <DiaryEditor addDiary={addDiary} />
-      <DiaryAnalysis data={getDataEmotionRate} />
-      <DiaryList
-        diaryList={data}
-        removeDiary={removeDiary}
-        editDiary={editDiary}
-      />
-    </div>
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={memoizedDiary}>
+        <div className="App">
+          {/*<OptimizeTest />*/}
+          {/*<LifeCycle/> 라이프사이클 테스트 코드*/}
+          <DiaryEditor />
+          <DiaryAnalysis data={getDataEmotionRate} />
+          <DiaryList />
+        </div>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 

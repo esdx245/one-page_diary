@@ -1,6 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
+import { DiaryDispatchContext } from "./App";
 
-const DiaryEditor = ({ addDiary }) => {
+const DiaryEditor = () => {
+  const { addDiary } = useContext(DiaryDispatchContext);
   const authorRef =
     useRef(); /*useRef는 DOM을 직접적으로 건드리는 방법으로 MutableRefObject을 반환. 이는 HTML부분에 접근할 수 있는것임 */
   const contentRef = useRef();
