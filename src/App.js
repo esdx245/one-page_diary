@@ -46,7 +46,14 @@ function App() {
     getData();
   }, []);
 
-  const addDiary = (author, content, emotionRate) => {
+  // 컴포넌트 최적화를 위해 일기 리스트에서 일기를 삭제했을 때 일기를 추가하는 DiaryEditor가 리렌더링 하지 않게 하는방법
+  // 1. useMemo ? => 안된다. y? => useMemo는 값을 return 받으므로 함수를 반환할 수 없다.
+  // 2. useCallback ? => 안된다. y? =>
+  //                              1. useCallback을 사용하기 위해 Dependency Array에 빈 값을 줄 경우 삭제하면 리렌더링 되는 문제는 해결된다. 하지만 새로 일기를 추가할 경우 Dependency Array가 빈값이므로 이 함수가 기억하는 data는 처음 생성되어 초기화된 []이므로 이전 값이 전부 날아가고 새로 만든 데이터 1개만 출력된다.
+  //                              2. useCallback을 사용하기 위해 Dependency Array에 data를 줄 경우 삭제하면 data가 변하므로 리렌더링되어 문제를 해결할 수 없다.
+  // 함수형 업데이트를 사용하면 된다. useState에서 set하는 함수에 함수를 넣어주는 것을 함수형 업데이트라고 한다. 이때 함수 인자에 업데이트 되어야 하는 인자를 넣을 경우 이전 값을 받아서 업데이트 할 수 있다.
+  // 그리고 useCallback을 사용하면 함수를 기억하므로 함수를 반환할 수 있다. 이 때 Dependency Array에 빈 배열을 넣어주면 된다.
+  const addDiary = React.useCallback((author, content, emotionRate) => {
     const create_date = new Date().getTime();
     const newdiary = {
       author,
@@ -55,8 +62,8 @@ function App() {
       create_date,
       id: idCount.current++,
     };
-    setData([newdiary, ...data]);
-  };
+    setData((data) => [newdiary, ...data]);
+  }, []);
 
   const removeDiary = (targetId) => {
     setData(data.filter((it) => it.id !== targetId));
