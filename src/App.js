@@ -26,10 +26,9 @@ function App() {
   const idCount = useRef(0);
 
   const getData = async () => {
-    const res = await fetch("http://43.201.21.188:3000/byebye").then((res) =>
-      res.json()
-    );
-    //console.log(res);
+    const res = await fetch(
+      "https://jsonplaceholder.typicode.com/comments"
+    ).then((res) => res.json());
     const initData = res.slice(0, 20).map((it) => {
       return {
         author: it.email,
